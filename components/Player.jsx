@@ -12,7 +12,7 @@ import {
 
 import { db } from "@/lib/firebase";
 
-export default function PlayerPage() {
+export default function Player() {
 
   // IMPORTANT
   // YOUR ROUTE MUST BE:
