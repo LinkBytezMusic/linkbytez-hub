@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  collection,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore";
-
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export default function Page({ params }) {
@@ -24,22 +18,31 @@ export default function Page({ params }) {
 
     const fetchProject = async () => {
 
-      const q = query(
-        collection(db, "projects"),
-        where("shareCode", "==", id)
-      );
+      try {
 
-      const snapshot = await getDocs(q);
+        const q = query(
+          collection(db, "projects"),
+          where("shareCode", "==", id)
+        );
 
-      if (!snapshot.empty) {
-        const data = snapshot.docs[0].data();
-        setAlbum(data);
+        const snapshot = await getDocs(q);
 
-        const first = data.tracks?.find(t => t.audioURL);
-        if (first) setCurrentTrack(first);
+        if (!snapshot.empty) {
+
+          const data = snapshot.docs[0].data();
+          setAlbum(data);
+
+          const firstTrack = data.tracks?.find(t => t.audioURL);
+          if (firstTrack) setCurrentTrack(firstTrack);
+
+        }
+
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
 
-      setLoading(false);
     };
 
     fetchProject();
@@ -61,19 +64,24 @@ export default function Page({ params }) {
         {album?.title}
       </h1>
 
-      {album?.tracks?.map((t) => (
+      {album?.tracks?.map((track) => (
         <div
-          key={t.id}
-          onClick={() => setCurrentTrack(t)}
-          className="p-4 bg-white/5 rounded-xl mb-3 cursor-pointer"
+          key={track.id}
+          onClick={() => setCurrentTrack(track)}
+          className="p-4 bg-white/5 rounded-xl mb-3 cursor-pointer hover:bg-white/10"
         >
-          {t.title}
+          {track.title}
         </div>
       ))}
 
       {currentTrack && (
         <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-white/10 p-4">
-          <audio controls autoPlay src={currentTrack.audioURL} className="w-full" />
+          <audio
+            controls
+            autoPlay
+            src={currentTrack.audioURL}
+            className="w-full"
+          />
         </div>
       )}
 
