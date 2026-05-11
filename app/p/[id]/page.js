@@ -6,19 +6,21 @@ import { db } from "@/lib/firebase";
 
 export default function Page({ params }) {
 
-  const id = params.id;
+  const id = params?.id;
 
   const [album, setAlbum] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-
     if (!id) return;
 
     const fetchProject = async () => {
-
       try {
+
+        setLoading(true);
+        setError("");
 
         const q = query(
           collection(db, "projects"),
@@ -27,22 +29,23 @@ export default function Page({ params }) {
 
         const snapshot = await getDocs(q);
 
-        if (!snapshot.empty) {
-
-          const data = snapshot.docs[0].data();
-          setAlbum(data);
-
-          const firstTrack = data.tracks?.find(t => t.audioURL);
-          if (firstTrack) setCurrentTrack(firstTrack);
-
+        if (snapshot.empty) {
+          setError("Project not found");
+          return;
         }
+
+        const data = snapshot.docs[0].data();
+        setAlbum(data);
+
+        const first = data.tracks?.find(t => t.audioURL);
+        if (first) setCurrentTrack(first);
 
       } catch (err) {
         console.error(err);
+        setError("Failed to load project");
       } finally {
         setLoading(false);
       }
-
     };
 
     fetchProject();
@@ -53,6 +56,14 @@ export default function Page({ params }) {
     return (
       <div className="h-screen flex items-center justify-center bg-black text-white">
         Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-black text-white">
+        {error}
       </div>
     );
   }
