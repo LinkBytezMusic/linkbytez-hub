@@ -3,20 +3,15 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function HomePage() {
+export default function HomeView() {
 
   const router = useRouter();
-
   const [link, setLink] = useState("");
 
   const openProject = () => {
-
     if (!link) return;
 
     let clean = link.trim();
-
-    // FULL URL
-    // https://y-gold-five.vercel.app/p/ba1f1f27
 
     if (clean.includes("/p/")) {
       clean = clean.split("/p/")[1];
@@ -28,95 +23,25 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-hidden">
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
 
-      {/* BACKGROUND */}
+      <h1 className="text-5xl font-black mb-6">
+        LINKBYTEZ
+      </h1>
 
-      <div className="absolute inset-0">
+      <input
+        value={link}
+        onChange={(e) => setLink(e.target.value)}
+        placeholder="Paste project link"
+        className="p-4 rounded-xl bg-white/10 w-80 mb-4"
+      />
 
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=2000')] bg-cover bg-center opacity-20" />
-
-        <div className="absolute inset-0 bg-black/70" />
-
-      </div>
-
-      {/* CONTENT */}
-
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
-
-        {/* LOGO */}
-
-        <div className="mb-6 text-green-400 text-sm tracking-[10px] font-bold">
-          LINKBYTEZ
-        </div>
-
-        {/* TITLE */}
-
-        <h1 className="text-6xl md:text-8xl font-black text-center leading-none">
-
-          MUSIC
-          <br />
-          PLAYER
-
-        </h1>
-
-        {/* SUB */}
-
-        <p className="mt-6 text-gray-400 text-center max-w-xl text-lg">
-
-          Open exclusive music projects, albums,
-          demos and collaborations directly from LinkBytez.
-
-        </p>
-
-        {/* INPUT */}
-
-        <div className="mt-10 w-full max-w-2xl flex flex-col md:flex-row gap-4">
-
-          <input
-            type="text"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-            placeholder="Paste project link or share code..."
-            className="
-              flex-1
-              bg-white/5
-              border
-              border-white/10
-              rounded-2xl
-              px-6
-              py-5
-              text-white
-              outline-none
-              focus:border-green-400
-            "
-          />
-
-          <button
-            onClick={openProject}
-            className="
-              px-8
-              py-5
-              rounded-2xl
-              bg-green-400
-              text-black
-              font-black
-              hover:scale-105
-              transition
-            "
-          >
-            ENTER
-          </button>
-
-        </div>
-
-        {/* FOOTER */}
-
-        <p className="mt-10 text-xs text-gray-500">
-          Powered by LinkBytez
-        </p>
-
-      </div>
+      <button
+        onClick={openProject}
+        className="px-6 py-3 bg-green-400 text-black font-bold rounded-xl"
+      >
+        ENTER
+      </button>
 
     </div>
   );
